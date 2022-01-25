@@ -11,12 +11,16 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "terraform-azure-aks" {
-#  backend = "remote"
+data "terraform_remote_state" "terraform_azure_aks" {
+  backend = "remote"
 
-#  config = {
-#    path = "../learn-terraform-provision-aks-cluster/terraform.tfstate"
-#  }
+  config = {
+    organization = "hashicorp-tobiasrupprecht"
+
+    workspaces = {
+      name = "terraform-azure-aks"
+    }
+  }
 }
 
 # Retrieve AKS cluster information
@@ -25,8 +29,8 @@ provider "azurerm" {
 }
 
 data "azurerm_kubernetes_cluster" "cluster" {
-  name                = data.terraform_remote_state.aks.outputs.kubernetes_cluster_name
-  resource_group_name = data.terraform_remote_state.aks.outputs.resource_group_name
+  name                = data.terraform_remote_state.terraform_azure_aks.outputs.kubernetes_cluster_name
+  resource_group_name = data.terraform_remote_state.terraform_azure_aks.outputs.resource_group_name
 }
 
 provider "kubernetes" {
