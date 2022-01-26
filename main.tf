@@ -11,6 +11,7 @@ terraform {
   }
 }
 
+# Access remote state from other workspace
 data "terraform_remote_state" "terraform_azure_aks" {
   backend = "remote"
 
@@ -41,6 +42,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(data.azurerm_kubernetes_cluster.cluster.kube_config.0.cluster_ca_certificate)
 }
 
+# Deploy simple nginx
 resource "kubernetes_deployment" "nginx" {
   metadata {
     name = "scalable-nginx-example"
@@ -87,6 +89,7 @@ resource "kubernetes_deployment" "nginx" {
   }
 }
 
+# Deploy LoadBalancer to access nginx
 resource "kubernetes_service" "nginx" {
   metadata {
     name = "nginx-example"
